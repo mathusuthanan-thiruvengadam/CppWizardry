@@ -1,0 +1,5 @@
+unique_ptr
+
+Replaces auto_ptr, which is deprecated. 
+Allows exactly one owner of the underlying pointer
+Can be moved to a new owner, but not copied or shared.

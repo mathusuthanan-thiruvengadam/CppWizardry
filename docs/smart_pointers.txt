@@ -1,0 +1,63 @@
+Smart pointers are defined in the std namespace in the <memory> header file.
+It is a realization of Resource Allocation Is Intiailization Idiom
+It is a wrapper for "raw pointer"
+Smart pointers are initiailized in stack
+How it is realized
+	void UseRawPointer()
+	{
+		// Using a raw pointer -- not recommended.
+		Song* pSong = new Song(L"Nothing on You", L"Bruno Mars"); 
+
+		// Use pSong...
+
+		// Don't forget to delete!
+		delete pSong;   
+	}
+
+	void UseSmartPointer()
+	{
+		// Declare a smart pointer on stack and pass it the raw pointer.
+		unique_ptr<Song> song2(new Song(L"Nothing on You", L"Bruno Mars"));
+
+		// Use song2...
+		wstring s = song2->duration_;
+		//...
+
+	} // song2 is deleted automatically here.
+Hypothesis how a smartpointer would have been implemented
+	// C++ program to demonstrate the working of Smart Pointer
+	#include <iostream>
+	using namespace std;
+
+	class SmartPtr {
+		int* ptr; // Actual pointer
+	public:
+		// Constructor: Refer
+		// https://www.geeksforgeeks.org/g-fact-93/ for use of
+		// explicit keyword
+		explicit SmartPtr(int* p = NULL) { ptr = p; }
+
+		// Destructor
+		~SmartPtr() { delete (ptr); }
+
+		// Overloading dereferencing operator
+		int& operator*() { return *ptr; }
+	};
+
+	int main()
+	{
+		SmartPtr ptr(new int());
+		*ptr = 20;
+		cout << *ptr;
+
+		// We don't need to call delete ptr: when the object
+		// ptr goes out of scope, the destructor for it is
+		// automatically called and destructor does delete ptr.
+
+		return 0;
+	}
+
+types of smart pointers
+	unique_ptr/auto_ptr
+	shared_ptr
+	weak_ptr

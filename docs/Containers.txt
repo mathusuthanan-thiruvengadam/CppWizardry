@@ -1,0 +1,48 @@
+Links: https://www.geeksforgeeks.org/the-c-standard-template-library-stl/
+
+In C++, containers are data structures that allow you to store and organize multiple elements of the same or different types. These containers offer various functionalities, such as dynamic memory management, automatic resizing, efficient insertion, deletion, and retrieval of elements.
+
+There are 3 types of contains
+Sequence Containers : 
+=====================
+(sequence containers are a category of containers provided by the Standard Template Library that maintain the order of elements in the way they are inserted. They allow you to store elements in a linear sequence, and you can access, insert, and delete elements based on their position within the container.)
+1 std::array : 
+is a container class that provides a fixed-size array
+it offers similar functionality to built-in arrays but with additional benefits such as bounds-checking and compatibility with STL algorithms.
+
+2 std::vector: 
+A dynamic array that can resize itself automatically. 
+Elements are stored in contiguous memory, allowing for efficient random access. 
+It provides constant time complexity for random access (O(1)), but inserting or deleting elements from the middle is relatively slow.
+
+3 std::list: 
+A doubly linked list that allows for fast insertion and deletion at any position. 
+However, random access is slower compared to std::vector.
+
+4 std::deque: 
+A double-ended queue that allows for efficient insertion and deletion at both ends.
+It provides constant time complexity for random access like std::vector, but it has better performance for inserting and deleting elements at the beginning and end
+
+
+Associative Containers: 
+=======================
+(associative containers are a category of containers provided by the Standard Template Library that store elements in a way that allows for efficient search and retrieval based on keys rather than their position in the container. They are called "associative" because they maintain a unique association between keys and their corresponding values.)
+
+std::set: An ordered set that stores unique elements in sorted order. It automatically maintains the order of elements based on their values.
+
+std::map: An ordered associative container that stores key-value pairs. Keys are unique, and the elements are automatically sorted based on the keys.
+
+std::multiset: Similar to std::set, but it allows multiple elements with the same value.
+
+std::multimap: Similar to std::map, but it allows multiple key-value pairs with the same key.
+
+Unordered Containers: 
+=====================
+(unordered containers are a category of containers provided by the Standard Template Library (STL) that store elements in a way that allows for efficient search and retrieval, but without maintaining a specific order of elements based on their keys. Unordered containers use hash tables (convert keys into an array index) as their underlying data structure, which provides fast access to elements based on their keys.)
+
+std::unordered_set: An unordered set that stores unique elements using a hash table for fast access. The order of elements is not guaranteed.
+std::unordered_map: An unordered associative container that stores key-value pairs using a hash table for fast access. The order of elements is not guaranteed.
+std::unordered_multiset: Similar to std::unordered_set, but it allows multiple elements with the same value.
+std::unordered_multimap: Similar to std::unordered_map, but it allows multiple key-value pairs with the same key.
+Each container class provides specific methods and functions to perform operations such as inserting, erasing, searching, and accessing elements. The choice of container depends on the requirements of your application and the specific operations you need to perform on the data.
+

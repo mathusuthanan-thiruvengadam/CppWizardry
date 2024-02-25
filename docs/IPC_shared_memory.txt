@@ -1,0 +1,166 @@
+
+
+Shared memory
+==============================================================================================================================
+CreateFileMapping()
+	HANDLE CreateFileMappingA(
+	  [in]           HANDLE                hFile,
+	  [in, optional] LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
+	  [in]           DWORD                 flProtect,
+	  [in]           DWORD                 dwMaximumSizeHigh,
+	  [in]           DWORD                 dwMaximumSizeLow,
+	  [in, optional] LPCSTR                lpName
+	);
+	- A handle to the file from which to create a file mapping object.
+	- If hFile is INVALID_HANDLE_VALUE, the calling process must also specify a size for the file mapping object in the dwMaximumSizeHigh and dwMaximumSizeLow parameters. In this scenario, CreateFileMapping creates a file mapping object of a specified size that is backed by the system paging file instead of by a file in the file system.
+	
+MapViewOfFile()
+	LPVOID MapViewOfFile(
+	  [in] HANDLE hFileMappingObject,
+	  [in] DWORD  dwDesiredAccess,
+	  [in] DWORD  dwFileOffsetHigh,
+	  [in] DWORD  dwFileOffsetLow,
+	  [in] SIZE_T dwNumberOfBytesToMap
+	);	
+	
+UnMapViewOfFile()
+	
+CloseHandle()
+
+
+Flow	
+================================================================================================================================
+In Windows, the CreateFileMapping and MapViewOfFile APIs are commonly used for inter-process communication (IPC) through shared memory. Here's a basic overview of how you can use them:
+
+Create a File Mapping Object:
+step1: You start by creating a file mapping object using the CreateFileMapping function. This function creates a named or unnamed file mapping object for a specified file or a pagefile-backed section.
+	HANDLE hFileMapping = CreateFileMapping(
+	INVALID_HANDLE_VALUE,   // File handle (if using a file). 
+							// INVALID_HANDLE_VALUE for a pagefile-backed section.
+	NULL,                   // Optional security attributes
+	PAGE_READWRITE,         // Protection for the file mapping object
+	0,                      // High-order DWORD of the maximum size of the file mapping object
+	dwSize,                 // Low-order DWORD of the maximum size of the file mapping object
+	szName                  // Name of the file mapping object (can be NULL for unnamed)
+	);
+
+step2: Map the File Mapping Object into Process Address Space:
+After creating the file mapping object, you need to map it into the address space of the calling process using the MapViewOfFile function.
+	LPVOID pMapView = MapViewOfFile(
+		hFileMapping,   // Handle to the file mapping object
+		FILE_MAP_ALL_ACCESS,  // Desired access rights to the file mapping object
+		0,              // High-order DWORD of the file offset
+		0,              // Low-order DWORD of the file offset
+		dwSize          // Number of bytes to map (0 means map the entire file)
+	);
+
+step3: Access Shared Memory:
+Once mapped, you can read from or write to the shared memory region through the pointer returned by MapViewOfFile.
+
+step4: Unmap and Cleanup:
+Finally, when you're done with the shared memory, unmap the view and close the file mapping object.
+
+Note:
+Also, proper synchronization mechanisms (like mutexes or semaphores) should be used to prevent race conditions when accessing shared memory between processes.
+
+
+
+Example
+=====================================================================================================================
+Process 1:
+#include <Windows.h>
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // Create or open a file mapping object
+    HANDLE hFileMapping = CreateFileMapping(
+        INVALID_HANDLE_VALUE,   // File handle (if using a file). 
+                                // INVALID_HANDLE_VALUE for a pagefile-backed section.
+        NULL,                   // Optional security attributes
+        PAGE_READWRITE,         // Protection for the file mapping object
+        0,                      // High-order DWORD of the maximum size of the file mapping object
+        1024,                   // Low-order DWORD of the maximum size of the file mapping object
+        L"MyFileMapping"        // Name of the file mapping object (named)
+    );
+
+    if (hFileMapping == NULL) {
+        cout << "Error creating file mapping: " << GetLastError() << endl;
+        return 1;
+    }
+
+    // Map the file mapping object into the address space of the calling process
+    LPVOID pMapView = MapViewOfFile(
+        hFileMapping,           // Handle to the file mapping object
+        FILE_MAP_WRITE,         // Desired access rights to the file mapping object
+        0,                      // High-order DWORD of the file offset
+        0,                      // Low-order DWORD of the file offset
+        1024                    // Number of bytes to map
+    );
+
+    if (pMapView == NULL) {
+        cout << "Error mapping view of file: " << GetLastError() << endl;
+        CloseHandle(hFileMapping);
+        return 1;
+    }
+
+    // Write data to the shared memory
+    char* pData = (char*)pMapView;
+    strcpy_s(pData, 1024, "Hello from Process 1");
+
+    // Unmap the view and close the file mapping object
+    UnmapViewOfFile(pMapView);
+    CloseHandle(hFileMapping);
+
+    return 0;
+}
+
+
+
+
+Process 2:
+#include <Windows.h>
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // Open the file mapping object created by Process 1
+    HANDLE hFileMapping = OpenFileMapping(
+        FILE_MAP_READ,  // Desired access rights to the file mapping object
+        FALSE,          // Inherit handle option
+        L"MyFileMapping"// Name of the file mapping object
+    );
+
+    if (hFileMapping == NULL) {
+        cout << "Error opening file mapping: " << GetLastError() << endl;
+        return 1;
+    }
+
+    // Map the file mapping object into the address space of the calling process
+    LPVOID pMapView = MapViewOfFile(
+        hFileMapping,           // Handle to the file mapping object
+        FILE_MAP_READ,          // Desired access rights to the file mapping object
+        0,                      // High-order DWORD of the file offset
+        0,                      // Low-order DWORD of the file offset
+        1024                    // Number of bytes to map
+    );
+
+    if (pMapView == NULL) {
+        cout << "Error mapping view of file: " << GetLastError() << endl;
+        CloseHandle(hFileMapping);
+        return 1;
+    }
+
+    // Read data from the shared memory
+    char* pData = (char*)pMapView;
+    cout << "Received message from Process 1: " << pData << endl;
+
+    // Unmap the view and close the file mapping object
+    UnmapViewOfFile(pMapView);
+    CloseHandle(hFileMapping);
+
+    return 0;
+}
+

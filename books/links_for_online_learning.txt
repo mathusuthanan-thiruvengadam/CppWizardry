@@ -1,0 +1,3 @@
+Links for online learning
+https://www.tutorialspoint.com/cplusplus/index.htm
+https://learn.microsoft.com/en-us/cpp/cpp/smart-pointers-modern-cpp?view=msvc-170

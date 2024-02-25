@@ -1,0 +1,1 @@
+ wild pointer is an uninitialized pointer that contains a random memory address that may point to a non-existent or invalid memory location. 

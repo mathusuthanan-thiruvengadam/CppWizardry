@@ -1,0 +1,128 @@
+Component Object Model (COM) is a binary-interface standard for software components introduced by Microsoft. While COM itself isn't primarily focused on IPC (Inter-Process Communication), it can be used effectively for IPC in the Windows environment, especially when dealing with communication between different processes or across different technologies/languages. Here's how COM can be used for IPC:
+
+COM Servers and Clients:
+========================
+In a typical COM scenario, you have a COM server that implements certain interfaces, and one or more COM clients that consume those interfaces. These components can reside in different processes or even on different machines.
+COM servers expose their functionality through COM interfaces. Clients communicate with the server by obtaining interface pointers and calling methods defined in these interfaces.
+
+Marshaling:
+================
+COM provides built-in support for marshaling, which is the process of packaging method parameters and return values so that they can be transmitted across process boundaries.
+When a client calls a method on a COM object located in another process, COM automatically marshals the method call parameters and unmarshals the return values, allowing seamless communication between processes.
+
+Interface Pointers:
+========================
+COM uses interface pointers to reference objects. These pointers are opaque handles that allow clients to access the functionality exposed by COM servers, regardless of where those servers are located.
+Interface pointers can be passed across process boundaries, enabling communication between processes.
+
+Out-of-process COM Servers:
+================================
+COM allows objects to be instantiated in separate processes from their clients. These out-of-process COM servers are referred to as Local Server (EXE) or Remote Server (DLLHost) depending on whether they run in a separate executable or a DLLHost process.
+Clients communicate with out-of-process COM servers via COM interfaces, and COM handles the inter-process communication transparently.
+
+Distributed COM (DCOM):
+========================
+Distributed COM extends COM to support communication between COM objects across network boundaries. 
+DCOM enables communication between COM objects on different machines.
+DCOM provides additional features such as security, authentication, and distributed object activation to support communication in a distributed environment.
+In summary, COM provides a robust framework for IPC in the Windows environment by allowing components to communicate seamlessly across process boundaries. 
+Through features like marshaling, interface pointers, and out-of-process servers, COM enables efficient and transparent communication between COM objects residing in different processes.
+
+
+Sample project
+===============
+Server:
+#include <Windows.h>
+#include <iostream>
+
+// Define a simple interface
+class IAddition : public IUnknown {
+public:
+    virtual HRESULT __stdcall Add(int a, int b, int* result) = 0;
+};
+
+// Define the class that implements the interface
+class Addition : public IAddition {
+public:
+    HRESULT __stdcall Add(int a, int b, int* result) override {
+        *result = a + b;
+        return S_OK;
+    }
+
+    // Implement IUnknown methods
+    HRESULT __stdcall QueryInterface(REFIID riid, void** ppvObject) override {
+        if (riid == IID_IUnknown || riid == __uuidof(IAddition)) {
+            *ppvObject = static_cast<IAddition*>(this);
+            AddRef();
+            return S_OK;
+        }
+        *ppvObject = nullptr;
+        return E_NOINTERFACE;
+    }
+
+    ULONG __stdcall AddRef() override {
+        return 1;
+    }
+
+    ULONG __stdcall Release() override {
+        return 1;
+    }
+};
+
+int main() {
+    // Initialize COM
+    CoInitialize(nullptr);
+
+    // Create an instance of the COM object
+    Addition* pAddition = new Addition();
+
+    // Register the COM object
+    CoRegisterClassObject(__uuidof(IAddition), pAddition, CLSCTX_LOCAL_SERVER, REGCLS_SINGLEUSE, nullptr);
+
+    std::cout << "COM server running...\n";
+
+    // Wait for user input to exit
+    std::cin.get();
+
+    // Revoke the class object registration
+    CoRevokeClassObject(__uuidof(IAddition));
+
+    // Release COM
+    CoUninitialize();
+
+    return 0;
+}
+
+
+
+Client:
+#include <Windows.h>
+#include <iostream>
+
+int main() {
+    // Initialize COM
+    CoInitialize(nullptr);
+
+    // Create an instance of the COM object
+    IAddition* pAddition = nullptr;
+    HRESULT hr = CoCreateInstance(__uuidof(IAddition), nullptr, CLSCTX_LOCAL_SERVER, __uuidof(IAddition), reinterpret_cast<void**>(&pAddition));
+    if (SUCCEEDED(hr)) {
+        // Call the method on the COM object
+        int result;
+        hr = pAddition->Add(10, 20, &result);
+        if (SUCCEEDED(hr)) {
+            std::cout << "Result of addition: " << result << std::endl;
+        } else {
+            std::cerr << "Failed to perform addition.\n";
+        }
+        // Release the COM object
+        pAddition->Release();
+    } else {
+        std::cerr << "Failed to create COM instance.\n";
+    }
+
+    // Release COM
+    CoUninitialize();
+
+    return 0;
+}

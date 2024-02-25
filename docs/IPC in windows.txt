@@ -1,0 +1,57 @@
+IPC in windows
+==============
+COM (Component Object Model),
+DOM (Document Object Model),
+RPC (Remote Procedure Call), 
+
+Shared Memory,
+Named Pipes,
+WinSock
+Mailslots,
+
+clipboard, 
+Windows Messages,
+DDE (Dynamic Data Exchange),
+
+File Mapping,
+
+
+ALPC (Advance Local Procedure Call) and sockets
+
+Links:
+https://www.codeproject.com/Articles/13724/Windows-IPC
+
+
+The choice between Winsock, Pipes, and COM for IPC (Inter-Process Communication) depends on various factors such as the requirements of your application, ease of use, performance considerations, and compatibility with existing infrastructure. Let's compare these approaches:
+
+Winsock (Sockets):
+Pros:
+Platform independent: Sockets can be used for IPC not only in Windows but also in other operating systems.
+Network communication: Sockets can communicate over a network, enabling IPC between processes running on different machines.
+Versatility: Sockets support various protocols like TCP/IP, UDP, etc., providing flexibility in communication.
+Cons:
+Complexity: Implementing socket-based IPC may require more code compared to other methods.
+Overhead: Sockets involve network protocol overhead even for local IPC, which might impact performance.
+Pipes:
+Pros:
+Simplicity: Pipes are straightforward to set up and use for local IPC between processes on the same machine.
+Efficiency: Pipes operate at a lower level than sockets and have less overhead, making them efficient for local IPC.
+Security: Pipes can be secured using access control mechanisms provided by the operating system.
+Cons:
+Limited to local communication: Pipes are limited to communication between processes on the same machine.
+Lack of features: Pipes have fewer features compared to higher-level IPC mechanisms like COM.
+COM (Component Object Model):
+Pros:
+Language independence: COM allows IPC between components written in different languages, facilitating interoperability.
+Rich features: COM provides features like automatic marshaling, interface-based communication, and object activation.
+Distributed communication: DCOM extends COM to support IPC between processes running on different machines.
+Cons:
+Complexity: COM involves a learning curve and can be complex to implement compared to simpler IPC methods like pipes.
+Windows-only: COM is specific to the Windows platform, limiting cross-platform compatibility.
+Choosing the best approach:
+
+If you need local IPC between processes on the same machine and simplicity is a priority, pipes might be a good choice.
+If you require network communication or platform independence, Winsock (sockets) would be suitable.
+If you're developing Windows-specific applications and need features like language interoperability, distributed communication, and object-oriented IPC, COM may be the most appropriate choice.
+
+

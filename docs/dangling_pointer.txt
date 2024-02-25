@@ -1,0 +1,5 @@
+A pointer pointing to a memory location that has been deleted (or freed) is called a dangling pointer. Such a situation can lead to unexpected behavior in the program and also serve as a source of bugs in C programs.
+
+3 ways this situation occurs
+1) Deallocation of memory but not resetting the pointer to NULL
+2) Returning address of a stack variable from a function (It makes no sense after exiting from the function)

@@ -1,0 +1,66 @@
+R-Value
+RValue is a temporary object that is created during expressions but doesn't have a permanent location in memory. 
+For example, the result of an arithmetic operation or a temporary object returned by a function. 
+These objects are typically short-lived and don't persist beyond the expression where they're created.
+
+Inefficiency with R-Value
+These temporary objects were often copied unnecessarily, leading to performance overhead, especially for large objects or objects that involve expensive copy operations (like deep copying or resource allocation). 
+
+R-Value reference
+RValue references allow us to efficiently "move" the resources owned by temporary objects rather than copying them. This is done using move sematics
+
+Move semantics
+transferring resources (such as memory, file handles, or other managed resources) from one object to another rather than copying them. This is achieved by defining move constructors and move assignment operators, which efficiently transfer the resources from an RValue (temporary object) to another object.
+
+Move Constructors and Move Assignment Operators: 
+These special member functions are used to implement move semantics. They take an RValue reference as a parameter and efficiently move the resources from the passed object to the newly constructed or assigned object.
+
+Important
+Scenario without R-Value reference
+	
+	int m = k + l;
+	
+	1 In the first step, the lvalue m is created in memory. 
+	2 The sum k + l is calculated and the result is also stored in memory, but as an Rvalue. 
+	3 This temporary value is then copied into the address of m. For a short moment the value exists twice and therefore consumes twice the memory.
+	4 Afterward the temporary value is released again and can be deleted by the system.
+	
+	A simple value assignment thus causes two objects in memory, a copy operation and a delete operation. Now let’s look at the same thing again with an Rvalue reference instead of a Lvalue. 
+
+Scenario with R-Value reference
+
+	int &&n = k + l;
+	
+	1 First, an Rvalue reference n is created in memory.
+	2 The addition operator next computes the sum of the two lvalues k and l, and then the address of the temporary result is assigned to n without copying the actual value.
+	3 In code, Rvalue references can then be used like regular identifiers and thus Lvalues to access the formerly temporary objects in memory.
+
+
+https://www.udacity.com/blog/2023/01/exploring-c-rvalue-references.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Example move constructor using RValue reference
+class MyObject {
+public:
+    MyObject() {}
+    MyObject(MyObject&& other) noexcept {
+        // Move resources from 'other' to this object
+    }
+};
+
+int main() {
+    MyObject obj1;
+    MyObject obj2(std::move(obj1)); // std::move casts obj1 to an RValue reference
+    return 0;
+}

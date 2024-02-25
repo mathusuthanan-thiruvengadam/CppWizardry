@@ -1,0 +1,126 @@
+socket()
+bind()
+listen()
+accept()
+connect()
+send()
+recv()
+
+
+Server
+=====
+#include <iostream>
+#include <winsock2.h>
+
+#pragma comment(lib, "ws2_32.lib")
+
+int main() {
+    WSADATA wsaData;
+    SOCKET serverSocket, clientSocket;
+    SOCKADDR_IN serverAddr, clientAddr;
+    int clientAddrSize = sizeof(clientAddr);
+    char buffer[1024] = {0};
+
+    // Initialize Winsock
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        std::cerr << "WSAStartup failed.\n";
+        return 1;
+    }
+
+    // Create socket
+    if ((serverSocket = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed.\n";
+        return 1;
+    }
+
+    // Bind socket
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(8888); // Example port
+    if (bind(serverSocket, (SOCKADDR *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        std::cerr << "Socket binding failed.\n";
+        return 1;
+    }
+
+    // Listen for incoming connections
+    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+        std::cerr << "Socket listen failed.\n";
+        return 1;
+    }
+
+    std::cout << "Server listening on port 8888...\n";
+
+    // Accept connection
+    if ((clientSocket = accept(serverSocket, (SOCKADDR *)&clientAddr, &clientAddrSize)) == INVALID_SOCKET) {
+        std::cerr << "Accept failed.\n";
+        return 1;
+    }
+
+    std::cout << "Client connected.\n";
+
+    // Receive data from client
+    recv(clientSocket, buffer, sizeof(buffer), 0);
+    std::cout << "Received from client: " << buffer << "\n";
+
+    // Cleanup
+    closesocket(clientSocket);
+    closesocket(serverSocket);
+    WSACleanup();
+
+    return 0;
+}
+
+
+
+client
+======
+#include <iostream>
+#include <winsock2.h>
+
+#pragma comment(lib, "ws2_32.lib")
+
+int main() {
+    WSADATA wsaData;
+    SOCKET clientSocket;
+    SOCKADDR_IN serverAddr;
+    char message[] = "Hello from client";
+
+    // Initialize Winsock
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        std::cerr << "WSAStartup failed.\n";
+        return 1;
+    }
+
+    // Create socket
+    if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed.\n";
+        return 1;
+    }
+
+    // Connect to server
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // Example IP address
+    serverAddr.sin_port = htons(8888); // Example port
+    if (connect(clientSocket, (SOCKADDR *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        std::cerr << "Connection failed.\n";
+        return 1;
+    }
+
+    std::cout << "Connected to server.\n";
+
+    // Send data to server
+    send(clientSocket, message, strlen(message), 0);
+
+    // Cleanup
+    closesocket(clientSocket);
+    WSACleanup();
+
+    return 0;
+}
+
+
+Note:
+Same socket can be used to send and receive messages.
+However, if you need to simultaneously send and receive data on the same socket (e.g., for a chat application where both client and server can send messages to each other),
+you would typically use separate threads or non-blocking I/O to handle both sending and receiving operations concurrently. 
+This ensures that the sending and receiving operations do not block each other.

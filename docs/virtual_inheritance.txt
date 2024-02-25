@@ -1,0 +1,7 @@
+In C++, a class can inherit from multiple classes which is commonly referred as multiple inheritance. But this can cause problems sometimes, as you can have multiple instances of the base class.
+
+To tackle this problem, C++ uses a technique which ensures only one instance of a base class is present. That technique is referred as virtual inheritance.
+
+Virtual inheritance is used to solve 
+	Diamond problem
+	To avoid calling baseclass constructor

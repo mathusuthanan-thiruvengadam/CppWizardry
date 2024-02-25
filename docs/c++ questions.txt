@@ -1,0 +1,9 @@
+what is Diamond Problem?
+When virtual inheritance is useful?
+What is the real use of scope resolution?
+what is template specialization?
+what is dangling pointer?
+what is the difference between reference and pointer?
+
+
+
