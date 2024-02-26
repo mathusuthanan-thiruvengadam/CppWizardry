@@ -1,0 +1,76 @@
+Access specifiiers
+===================
+Three private, public and protected
+
+Private Inheritance:
+When a base class is privately inherited by the derived class, the public and protected members of the base class become private members of the derived class.
+This means that the public and protected members of the base class are accessible only within the scope of the derived class (including its member functions), but not accessible to objects of the derived class.
+Outside the derived class, the public and protected members of the base class are inaccessible.
+This kind of inheritance is often used for implementation inheritance rather than interface inheritance, meaning that the derived class wants to reuse the implementation of the base class without exposing its interface.
+
+Public Inheritance:
+When a base class is publicly inherited by the derived class, the public members of the base class become public members of the derived class, and the protected members of the base class become protected members of the derived class (if any).
+Public inheritance preserves the interface of the base class, meaning that all public members of the base class are accessible through objects of the derived class as well as by member functions of the derived class.
+Public inheritance establishes an "is-a" relationship, implying that a derived class object is also a base class object.
+This is the most common form of inheritance used in C++ when implementing polymorphism and reusing code.
+
+Protected inheritance
+
+When a base class is protectedly inherited by the derived class, the access levels of the members of the base class change accordingly:
+Public members of the base class: They become protected members of the derived class. This means that they are accessible within the derived class and its subclasses, but not from outside the class hierarchy.
+Protected members of the base class: They remain protected members of the derived class. This means that they are accessible within the derived class and its subclasses.
+Private members of the base class: They remain inaccessible from the derived class. They can only be accessed within the base class itself.
+In summary, when a base class is protectedly inherited, both public and protected members of the base class become protected members of the derived class, while private members of the base class remain inaccessible from the derived class.
+
+
+
+
+
+
+
+#include <iostream>
+
+class Base {
+public:
+    void publicFunction() {
+        std::cout << "Public function of Base" << std::endl;
+    }
+    void publicFunction2() {
+        std::cout << "Another public function of Base" << std::endl;
+    }
+private:
+    void privateFunction() {
+        std::cout << "Private function of Base" << std::endl;
+    }
+};
+
+class DerivedPrivate : private Base {
+public:
+    void accessBase() {
+        publicFunction(); // Accessible, but not from objects of DerivedPrivate
+        //privateFunction(); // Not accessible
+    }
+};
+
+class DerivedPublic : public Base {
+public:
+    void accessBase() {
+        publicFunction(); // Accessible through DerivedPublic objects
+        publicFunction2(); // Also accessible
+        //privateFunction(); // Not accessible
+    }
+};
+
+int main() {
+    DerivedPrivate derivedPrivate;
+    // derivedPrivate.publicFunction(); // Error: cannot access
+    derivedPrivate.accessBase(); // Accessible through DerivedPrivate member function
+
+    DerivedPublic derivedPublic;
+    derivedPublic.publicFunction(); // Accessible through DerivedPublic object
+    derivedPublic.accessBase(); // Accessible through DerivedPublic member function
+
+    return 0;
+}
+
+

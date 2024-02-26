@@ -1,0 +1,44 @@
+Ability of different objects to respond to the same message or method call in different ways.
+
+Compile-time Polymorphism (Static Binding or Early Binding):
+
+	Also known as method overloading and operator overloading.
+	In method overloading, multiple methods with the same name but different parameter lists are defined within the same class.
+	The compiler determines which method to call based on the number and types of arguments passed to it at compile time.
+	
+	class Calculation {
+		int add(int x, int y) {
+			return x + y;
+		}
+		
+		double add(double x, double y) {
+			return x + y;
+		}
+	}
+
+Runtime Polymorphism (Dynamic Binding or Late Binding):
+
+	Achieved through method overriding.
+	Occurs when a subclass provides a specific implementation of a method that is already defined in its superclass.
+	The decision of which method to call is made at runtime based on the actual object type.
+	Example:
+	class Animal {
+		void sound() {
+			System.out.println("Animal makes a sound");
+			}
+	}
+
+	class Dog extends Animal {
+		void sound() {
+			System.out.println("Dog barks");
+		}
+	}
+
+	class Cat extends Animal {
+		void sound() {
+			System.out.println("Cat meows");
+		}
+	}
+
+
+Polymorphism promotes code reusability, flexibility, and maintainability in object-oriented systems by allowing for more generic and adaptable code structures.

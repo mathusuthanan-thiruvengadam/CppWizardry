@@ -1,0 +1,72 @@
+is a function that is not a member of a class, but has access to the private and protected members of the class as if it were a member function. Friend functions are declared within the class definition using the friend keyword.
+
+	#include <iostream>
+
+	class MyClass {
+	private:
+		int x;
+
+	public:
+		MyClass() : x(0) {}
+
+		// Declaration of friend function
+		friend void friendFunction(MyClass obj);
+
+		// Member function of MyClass
+		void setX(int value) {
+			x = value;
+		}
+	};
+
+	// Definition of friend function
+	void friendFunction(MyClass obj) {
+		// Since friendFunction is a friend of MyClass, it can access private members of MyClass
+		std::cout << "Value of x is: " << obj.x << std::endl;
+	}
+
+	int main() {
+		MyClass obj;
+		obj.setX(5);
+		friendFunction(obj);
+		return 0;
+	}
+
+
+Why do we need friend functions?
+A friend function can be friendly to 2 or more classes. The friend function does not belong to any class, so it can be used to access private data of two or more classes as in the following example.
+
+	#include <iostream>
+	using namespace std;
+
+	class Square;  // forward declaration
+
+	class Rectangle {
+		int width, height;
+
+	public:
+		Rectangle(int w = 1, int h = 1):width(w),height(h){} 
+		friend void display(Rectangle &, Square &);
+	};
+
+	class Square {
+		int side;
+
+	public:
+		Square(int s = 1):side(s){} 
+		friend void display(Rectangle &, Square &);
+	};
+
+	void display(Rectangle &r, Square &s) {
+		cout << "Rectangle: " << r.width * r.height << endl;
+		cout << "Square: " << s.side * s.side << endl;
+	}
+
+	int main () {
+		Rectangle rec(5,10);
+		Square sq(5);
+		display(rec,sq);
+		return 0;
+	}
+
+
+The friend functions can serve, for example, to conduct operations between two different classes. Generally, the use of friend functions is out of an object-oriented programming methodology, so whenever possible it is better to use members of the same class to perform operations with them as in the following example getting exactly same output
