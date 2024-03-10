@@ -32,6 +32,7 @@ Versatility: Sockets support various protocols like TCP/IP, UDP, etc., providing
 Cons:
 Complexity: Implementing socket-based IPC may require more code compared to other methods.
 Overhead: Sockets involve network protocol overhead even for local IPC, which might impact performance.
+
 Pipes:
 Pros:
 Simplicity: Pipes are straightforward to set up and use for local IPC between processes on the same machine.

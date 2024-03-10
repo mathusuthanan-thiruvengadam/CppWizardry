@@ -4,6 +4,11 @@ What is the real use of scope resolution?
 what is template specialization?
 what is dangling pointer?
 what is the difference between reference and pointer?
+what is the meaning of having constructors and destructors as virtual?
+what is "using"? example
+how many types of constructors?
+
+
 
 
 

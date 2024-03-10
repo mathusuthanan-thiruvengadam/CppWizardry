@@ -3,3 +3,11 @@ unique_ptr
 Replaces auto_ptr, which is deprecated. 
 Allows exactly one owner of the underlying pointer
 Can be moved to a new owner, but not copied or shared.
+Unique_ptr is small and efficient; the size is one pointer
+
+
+how to create unique_ptr
+------------------------
+link:https://learn.microsoft.com/en-us/cpp/cpp/how-to-create-and-use-unique-ptr-instances?view=msvc-170
+make_unique is a template function that makes a pointer to the supplied data type
+uniqe_ptr is a tempalte class
