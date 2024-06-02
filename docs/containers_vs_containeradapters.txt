@@ -1,0 +1,18 @@
+In C++, containers and container adapters are both components of the Standard Template Library (STL) that provide data structures for storing and managing collections of objects. However, they differ in their functionality and usage.
+
+Here's a brief explanation of the difference between containers and container adapters:
+
+Containers:
+
+Containers in the STL are data structures that store and manage collections of objects.
+They provide direct access to their elements and support various operations such as insertion, removal, and traversal.
+Examples of containers include std::vector, std::list, std::deque, std::set, std::map, std::unordered_set, std::unordered_map, etc.
+Containers are typically used when you need to store and manipulate a collection of objects directly, and you need control over the structure and behavior of the collection.
+Container Adapters:
+
+Container adapters are classes that provide a restricted interface to existing container classes by restricting the operations that can be performed on them.
+They are implemented using existing container classes and typically offer a specific interface tailored to a particular use case or data structure.
+Examples of container adapters include std::stack, std::queue, and std::priority_queue.
+Container adapters often provide a higher-level interface or behavior on top of existing containers, such as stack-like (last-in, first-out), queue-like (first-in, first-out), or priority queue-like functionality.
+Container adapters are used when you need to enforce a specific behavior or interface for a container, such as ensuring that certain operations are performed in a particular order or restricting the types of operations that can be performed.
+In summary, containers are general-purpose data structures that provide direct access to their elements and support various operations, while container adapters are specialized classes that provide a restricted interface on top of existing containers to enforce specific behaviors or usage patterns. Depending on your requirements, you may choose to use either containers or container adapters in your code.

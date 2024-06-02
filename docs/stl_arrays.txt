@@ -1,0 +1,34 @@
+<array> is the header file
+
+sampel declaration
+	array<int, 10> x ({1,2,4,5,5,6,6,7,7,7})
+	
+methods
+	x.size() - length
+	x.empty() - returns true if array is empty or false
+	x.fill(10) - fills all array with the same number given
+	x.begin() - returns an iterator to the first element of the array
+	x.end() - returns an iterator to the last element of an array
+	x.cbegin() - returns constant iterator to the array. we can not edit the values in the iterator
+	x.cend - returns the constant iterator pointing to the last element in the array
+	x.front() - returns first element
+	x.back() - returns last element
+	x.at(10) - returns 10th element
+	x[10] - returns 10th element
+	get<10>(x) - returns 10th element
+	x.data() - returns the address of the first element in the array
+	x.max_size() - returns maximum size. same as size 
+	x.swap(y) - swaps the arrays between x and y (note: y is another array simular to x)
+	x.rbegin - reverse parsing of the array
+	
+How bound check is ensured by array 
+	by using at method, if elements are eccessed, it checks for the size. But if we use [] instead bound checks are not possible
+
+how to iterate through array
+	1)
+	for (int number : numbers)
+	
+	2)
+	for (auto it = numbers.begin(); it != numbers.end(); ++it) {
+        std::cout << *it << " ";
+    }

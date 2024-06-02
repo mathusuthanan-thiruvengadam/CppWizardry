@@ -32,7 +32,6 @@ class myclass {
 int main ( void ){
 	myclass <int> intobj;
 	cout<<"10+6="<<intobj.add(10,5);
-	
 	myclass <string> strobj;
 	cout<<"10+6="<<strobj.add("mathu","suthanan");
 	return 0;
